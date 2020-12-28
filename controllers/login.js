@@ -1,20 +1,21 @@
-const Contact = require("../models/contact");
+const Login = require("../models/login");
 
-module.exports.createContactDetails = function (body, callback) {
-  const { name, email, mobileNumber, comment } = body;
-  Contact.findOne({ email: email })
+module.exports.registerUser = function (body, callback) {
+  const { firstName, lastName, registerUsername, registerpwd, email } = body;
+  Login.findOne({ email: email })
     .then(function (currentUser) {
       if (currentUser) {
-        callback(null, "We already have your details.Thank you!");
+        callback(null, "USER IS ALREADY REGISTERED");
       } else {
-        var newUser = new Contact({
-          name: name,
+        var newUser = new Login({
+          firstname: firstName,
+          lastname: lastName,
+          username: registerUsername,
+          password: registerpwd,
           email: email,
-          mobileNumber: mobileNumber,
-          comment: comment,
         });
         newUser.save();
-        callback(null, "Contact Information Saved. Thank You!");
+        callback(null, "USER REGISTERED SUCCESSFULLY");
       }
     })
     .catch((err) => {
@@ -23,18 +24,18 @@ module.exports.createContactDetails = function (body, callback) {
     });
 };
 
-module.exports.getContactDetails = function (req, callback) {
-  const email = req.query.email;
-  User.findOne({ email: email })
+module.exports.loginUser = function (body, callback) {
+  const { username, password } = body;
+  Login.findOne({ username: username, password: password })
     .then(function (currentUser) {
       if (currentUser) {
         callback(null, currentUser);
       } else {
-        callback("CONTACT DETAILS NOT FOUND", null);
+        callback("Login DETAILS NOT FOUND", null);
       }
     })
     .catch((err) => {
-      callback("CONTACT DETAILS NOT FOUND", null);
+      callback("Login DETAILS NOT FOUND", null);
       console.error(err);
     });
 };
